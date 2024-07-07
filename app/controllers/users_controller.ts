@@ -11,7 +11,7 @@ export default class UsersController {
    * @param HttpContext
    * @returns Create a new user with a new organisation for the user
    */
-  public async register({ request, response }: HttpContext) {
+  async register({ request, response }: HttpContext) {
     const payload = await createUserValidator.validate(request.all())
 
     try {
@@ -62,7 +62,7 @@ export default class UsersController {
    * @param HttpContext
    * @returns Login a user
    */
-  public async login({ request, response }: HttpContext) {
+  async login({ request, response }: HttpContext) {
     const { email, password } = await loginUserValidator.validate(request.all())
 
     try {
@@ -89,7 +89,7 @@ export default class UsersController {
    * @param HttpContext
    * @returns Fetch the record of a user
    */
-  public async show({ response, params, auth }: HttpContext) {
+  async show({ response, params, auth }: HttpContext) {
     const isAuthenticated = await auth.check()
     if (!isAuthenticated) {
       return response.unauthorized({

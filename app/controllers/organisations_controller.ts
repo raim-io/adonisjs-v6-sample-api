@@ -10,7 +10,7 @@ export default class OrganisationsController {
    * @param HttpContext
    * @returns Fetch the organisations a user belongs to
    */
-  public async index({ response, auth }: HttpContext) {
+  async index({ response, auth }: HttpContext) {
     try {
       const user = await auth.authenticate()
 
@@ -34,7 +34,7 @@ export default class OrganisationsController {
    * @param HttpContext
    * @returns Retrieve an organisation a user belongs to
    */
-  public async show({ response, auth, params }: HttpContext) {
+  async show({ response, auth, params }: HttpContext) {
     try {
       const user = await auth.authenticate()
 
@@ -61,7 +61,7 @@ export default class OrganisationsController {
    * @param HttpContext
    * @returns Create a organisation through a user
    */
-  public async store({ request, response, auth }: HttpContext) {
+  async store({ request, response, auth }: HttpContext) {
     const { name, description } = await createOrganisationValidator.validate(request.all())
     const user = auth.user
 
@@ -99,7 +99,7 @@ export default class OrganisationsController {
    * @param HttpContext
    * @returns
    */
-  public async storeUser({ request, response, auth, params }: HttpContext) {
+  async storeUser({ request, response, auth, params }: HttpContext) {
     const { userId } = await addOrganisationUserValidator.validate(request.all())
     const user = auth.user
 

@@ -13,7 +13,7 @@ const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
 })
 
 export default class User extends compose(BaseModel, AuthFinder) {
-  public static selfAssignPrimaryKey = true
+  static selfAssignPrimaryKey = true
 
   @column({ isPrimary: true })
   declare userId: string
@@ -58,7 +58,7 @@ export default class User extends compose(BaseModel, AuthFinder) {
   })
 
   @beforeCreate()
-  public static generateCuid(user: User) {
+  static generateCuid(user: User) {
     user.userId = cuid()
   }
 }

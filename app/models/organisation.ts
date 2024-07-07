@@ -5,7 +5,7 @@ import type { ManyToMany } from '@adonisjs/lucid/types/relations'
 import { cuid } from '@adonisjs/core/helpers'
 
 export default class Organisation extends BaseModel {
-  public static selfAssignPrimaryKey = true
+  static selfAssignPrimaryKey = true
 
   @column({ isPrimary: true })
   declare orgId: string
@@ -33,7 +33,7 @@ export default class Organisation extends BaseModel {
   declare users: ManyToMany<typeof User>
 
   @beforeCreate()
-  public static generateCuid(org: Organisation) {
+  static generateCuid(org: Organisation) {
     org.orgId = cuid()
   }
 }

@@ -1,25 +1,7 @@
 import { UserFactory } from '#database/factories/user_factory'
 import User from '#models/user'
 import testUtils from '@adonisjs/core/services/test_utils'
-import { getActiveTest, test } from '@japa/runner'
-import timekeeper from 'timekeeper'
-
-export function timeTravel(monthsToTravel: number) {
-  const test = getActiveTest()
-  if (!test) {
-    throw new Error('Cannot use "timeTravel" outside of a Japa test')
-  }
-
-  timekeeper.reset()
-
-  const date = new Date()
-  date.setMonth(date.getMonth() + monthsToTravel)
-  timekeeper.travel(date)
-
-  test.cleanup(() => {
-    timekeeper.reset()
-  })
-}
+import { test } from '@japa/runner'
 
 test.group('Users / Auth', (group) => {
   group.each.setup(async () => await testUtils.db().truncate())
