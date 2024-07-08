@@ -10,9 +10,9 @@ export const createOrganisationValidator = vine.compile(
 export const addOrganisationUserValidator = vine.compile(
   vine.object({
     userId: vine.string().exists(async (db, value) => {
-      const exists = await db.from('users').where({ userId: value })
+      const exists = await db.from('users').where({ user_id: value })
 
-      return !exists
+      return !!exists
     }),
   })
 )

@@ -16,10 +16,10 @@ export default class Organisation extends BaseModel {
   @column()
   declare description: string | null
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ serializeAs: null, autoCreate: true })
   declare createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({ serializeAs: null, autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
 
   @manyToMany(() => User, {

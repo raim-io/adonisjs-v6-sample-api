@@ -48,15 +48,15 @@ export default class UsersController {
         data: { accessToken: token.value!.release(), user: newUser },
       })
     } catch (error) {
-      throw new error({
+      return response.unauthorized({
         status: 'Bad request',
         message: 'Registration unsuccessful',
-        statusCode: 400,
+        statusCode: 401,
       })
     }
   }
 
-  /*
+  /**
    * `POST /auth/login`
    *
    * @param HttpContext
@@ -75,7 +75,7 @@ export default class UsersController {
         data: { accessToken: token.value!.release(), user: user },
       })
     } catch (error) {
-      return response.badRequest({
+      return response.unauthorized({
         status: 'Bad request',
         message: 'Authentication failed',
         statusCode: 401,

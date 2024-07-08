@@ -1,6 +1,5 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { addOrganisationUserValidator, createOrganisationValidator } from '#validators/organisation'
-import db from '@adonisjs/lucid/services/db'
 import Organisation from '#models/organisation'
 
 export default class OrganisationsController {
@@ -24,7 +23,12 @@ export default class OrganisationsController {
         },
       })
     } catch (error) {
-      throw error('Unable to retrieve user organisations')
+      // throw new error('Unable to retrieve user organisations')
+
+      return response.badRequest({
+        status: 'Bad request',
+        message: 'Registration un',
+      })
     }
   }
 
@@ -41,17 +45,16 @@ export default class OrganisationsController {
       const userOrganisation = await user
         .related('organisations')
         .query()
-        .where({ orgId: params.orgId })
+        .where({ 'organisations.org_id': params.orgId })
+        .first()
 
       return response.ok({
         status: 'success',
         message: '<message>',
-        data: {
-          userOrganisation,
-        },
+        data: userOrganisation,
       })
     } catch (error) {
-      throw error('Unable to retrieve user organisations')
+      return response.badRequest({ message: error.message })
     }
   }
 
@@ -63,28 +66,18 @@ export default class OrganisationsController {
    */
   async store({ request, response, auth }: HttpContext) {
     const { name, description } = await createOrganisationValidator.validate(request.all())
-    const user = auth.user
-
-    if (!user) {
-      return
-    }
+    const user = await auth.authenticate()
 
     try {
-      const newOrganisation = await db.transaction(async (trx) => {
-        const organisation = await user!
-          .related('organisations')
-          .create({ name, description }, { client: trx })
-
-        return organisation
-      })
+      const organisation = await user!.related('organisations').create({ name, description })
 
       return response.created({
         status: 'success',
         message: 'Organisation created successfully',
-        data: newOrganisation,
+        data: organisation,
       })
     } catch (error) {
-      throw error({
+      response.badRequest({
         status: 'Bad request',
         message: 'Client error',
         statusCode: 400,
@@ -100,28 +93,31 @@ export default class OrganisationsController {
    * @returns
    */
   async storeUser({ request, response, auth, params }: HttpContext) {
+    await auth.authenticate()
+
     const { userId } = await addOrganisationUserValidator.validate(request.all())
-    const user = auth.user
 
-    if (!user) {
-      return
-    }
-
-    await db.transaction(async (trx) => {
+    try {
       const requestedOrganisation = await Organisation.query()
         .where({ orgId: params.orgId })
         .first()
 
       if (!requestedOrganisation) {
-        return
+        return response.notFound({
+          status: 'Not Found',
+          message: 'Organisation was not found',
+          statusCode: 404,
+        })
       }
 
-      await requestedOrganisation.related('users').sync([userId], false, trx)
-    })
+      await requestedOrganisation.related('users').sync([userId], false)
 
-    return response.created({
-      status: 'success',
-      message: 'User added to organisation successfully',
-    })
+      return response.created({
+        status: 'success',
+        message: 'User added to organisation successfully',
+      })
+    } catch (error) {
+      return error
+    }
   }
 }

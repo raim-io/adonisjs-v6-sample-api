@@ -33,10 +33,10 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null })
   declare password: string
 
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ serializeAs: null, autoCreate: true })
   declare createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({ serializeAs: null, autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
   @manyToMany(() => Organisation, {
